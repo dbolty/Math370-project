@@ -10,9 +10,9 @@ classdef Drone
     end
     
     methods
-        function obj = Drone()
-            obj.Current_Location = campos;
-            obj.Current_Target = camtarget;
+        function obj = Drone(camp, camt)
+            obj.Current_Location = camp;
+            obj.Current_Target = camt;
             obj.Drone_Path = [];
             obj.Target_Path = [];
         end
@@ -24,15 +24,12 @@ classdef Drone
         
         function obj = fly_to(obj,dest,speed)
             X1 = obj.Current_Location;
-            gca
-            [x2,y2,z2] = camposm(dest(1),dest(2),dest(3));
-            campos(X1);
-            X2 = [x2,y2,z2];
+            X2 = dest;
             [m,b] = get_line(X1,X2);
             T = linspace(0,1,100);
             for n = 1:length(T)
                 V = m*T(n) + b;
-                campos([V(1),V(2),V(3)]);
+                camposm(V(1),V(2),V(3));
                 obj.view();
                 pause(1/speed);
             end
@@ -41,15 +38,12 @@ classdef Drone
         
         function obj = change_target(obj,dest,speed)
             X1 = obj.Current_Target;
-            gca
-            [x2,y2,z2] = camtargm(dest(1),dest(2),dest(3));
-            camtarget(X1);
-            X2 = [x2,y2,z2];
+            X2 = dest;
             [m,b] = get_line(X1,X2);
             T = linspace(0,1,100);
             for n = 1:length(T)
                 V = m*T(n) + b;
-                camtarget([V(1),V(2),V(3)]);
+                camtarm(V(1),V(2),V(3));
                 obj.view();
                 pause(1/speed);
             end
@@ -58,22 +52,17 @@ classdef Drone
         
         function V = fly_vector(obj,dest)
             X1 = obj.Current_Location;
-            [x2,y2,z2] = camposm(dest(1),dest(2),dest(3));
-            campos(X1);
-            X2 = [x2,y2,z2];
+            X2 = dest;
             [m,b] = get_line(X1,X2);
             T = linspace(0,1,100);
             for n = 1:length(T)
-                %m*T(n) + b
                 V(n,:) = m*T(n) + b;
             end
         end
         
         function V = target_vector(obj,dest)
             X1 = obj.Current_Target;
-            [x2,y2,z2] = camtargm(dest(1),dest(2),dest(3));
-            camtarget(X1);
-            X2 = [x2,y2,z2];
+            X2 = dest;
             [m,b] = get_line(X1,X2);
             T = linspace(0,1,100);
             for n = 1:length(T)
@@ -87,8 +76,8 @@ classdef Drone
             TV = obj.target_vector(t_dest)
             for n = 1:length(T)
                 obj.view();
-                campos([FV(n,1),FV(n,2),FV(n,3)]);
-                camtarget([TV(n,1),TV(n,2),TV(n,3)]);
+                camposm(FV(n,1),FV(n,2),FV(n,3));
+                camtarm(TV(n,1),TV(n,2),TV(n,3));
                 pause(1/t_speed);
             end
             obj.Current_Location = FV(length(T),:)

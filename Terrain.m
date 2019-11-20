@@ -12,8 +12,8 @@ classdef Terrain
         header
         profile
         OrthoImage
-        curr_camera_loc;
-        curr_cam_target
+        curr_cam_loc
+        curr_cam_tar
     end
     
     methods
@@ -51,10 +51,13 @@ classdef Terrain
             y = obj.lonlim(2);
             z = max(max(obj.Z));
             obj.curr_cam_loc = [x,y,z];
-            obj.curr_cam.tar = [mean(obj.latlim) , mean(obj.lonlim), z];
+            obj.curr_cam_tar = [mean(obj.latlim) , mean(obj.lonlim), z];
         end
         
-        
+        function [camp, camt] = get_cam(obj)
+            camp = obj.curr_cam_loc; 
+            camt = obj.curr_cam_tar;
+        end
         function Display(obj)
             f= gcf;
             f.WindowState = 'maximized';
@@ -143,7 +146,11 @@ classdef Terrain
                 drawnow
             end
         end
-        
+        function set_lighting(obj,lat,lon)
+            lighting gouraud
+            handle = lightm(lat,lon);
+            sunsetlights(handle);
+        end
 
     end
 end

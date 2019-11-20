@@ -1,0 +1,8 @@
+clear all
+clc
+
+figure(1)
+filename = "USGSDATA/
+terrain  = Terrain(filename)
+
+terrain.display()

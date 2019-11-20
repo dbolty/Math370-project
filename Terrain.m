@@ -12,7 +12,8 @@ classdef Terrain
         header
         profile
         OrthoImage
-        
+        curr_camera_loc;
+        curr_cam_target
     end
     
     methods
@@ -22,7 +23,6 @@ classdef Terrain
             obj.Z(obj.Z==0) = -1;
             obj.latlim = [min(obj.lat(:)) max(obj.lat(:))];
             obj.lonlim = [min(obj.lon(:)) max(obj.lon(:))];
-            f.WindowState = 'maximized';
             %% This is going to be another perspective of the elevation data
             numberOfAttempts = 5;
             attempt = 0;
@@ -47,6 +47,11 @@ classdef Terrain
                                        'Lonlim',obj.lonlim, ...
                                        'ImageHeight',imageLength, ...
                                        'ImageWidth',imageLength);
+            x = obj.latlim(1);
+            y = obj.lonlim(2);
+            z = max(max(obj.Z));
+            obj.curr_cam_loc = [x,y,z];
+            obj.curr_cam.tar = [mean(obj.latlim) , mean(obj.lonlim), z];
         end
         
         
@@ -59,9 +64,9 @@ classdef Terrain
             daspectm('m',1);
             x = obj.latlim(1);
             y = obj.lonlim(2);
-            z = max(max(obj.Z))
+            z = max(max(obj.Z));
+            camproj('orthographic')
             camposm(x , y ,z+1000);
-            view(3)
             %lighting gouraud
             camtargm(mean(obj.latlim) , mean(obj.lonlim), z);
             plabel off
@@ -73,8 +78,9 @@ classdef Terrain
             x = obj.latlim(1);
             y = obj.lonlim(2);
             z = max(max(obj.Z));
-            [x,y,z] = camposm(x , y ,z+1000)
-            view(3)
+            camproj('perspective')
+            [x,y,z] = camposm(x , y ,z+1000);
+            view(3);
             campos([x,y,z])            
         end
         
@@ -123,6 +129,7 @@ classdef Terrain
                     drawnow
                 end
         end
+        
         function Circle(obj)
             obj.Display();
             [xm,ym,z]=camposm(min(obj.latlim),min(obj.lonlim),10000)
@@ -137,45 +144,7 @@ classdef Terrain
             end
         end
         
-        function get_Flight_Target_path(Flight_Path, Target_Path, total_time)
-            [FM, FB] = get_linear_approx(Flight_Path);
-            [TM, TB] = get_linear_approx(Target_Path);
-            F_total_mag = sum(magnitude(FM));
-            T_total_mag = sum(magnitude(TM));
-            fm = FM(1)
-            tm = TM(1);
-            fb = FB(1);
-            tb = TB(1);
-            f_t = 0;
-            t_t = 0;
-            while(1)
-                
-                if(
-                [x,y,z] = fm*f_t + fb
-                campos
-            end
-            
-        end
-        
-        
-        function [M,B] = get_linear_approx( X )
-            M = zeroes(length(X)-1);
-            B = M;
-            for i = 1:length(X)-1
-               [m,b] = get_line(X(i), X(i-1));
-               M(i) = m;
-               B(i) = b;
-           end
-        end
-        
-        function mag = magnitude(X)
-           mag = sqrt(X.*X);
-        end
-        function [m,b] = get_line(x1,x2)
-           m = x2-x1;
-           b = x1;
-        end
-        
+
     end
 end
 

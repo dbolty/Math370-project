@@ -7,6 +7,8 @@ filename = "USGSDATA/San_Fran_North.dem";
 terrain  = Terrain(filename);
 terrain.Display();
 terrain.view();
+view(3)
+
 
 
 figure(2); clf;

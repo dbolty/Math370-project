@@ -95,7 +95,7 @@ classdef Terrain
                 for i=1:100
             	camva(5)
                 campos([l(i) L(i) 10000])
-                camtarget([mean(l) mean(L) max(max(obj.Z))])
+                camtarget([l(i) L(i) max(max(obj.Z))])
                 drawnow
                 pause(.1)
                 end
